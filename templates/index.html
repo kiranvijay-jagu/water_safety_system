@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Water Safety & Disease Alert System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="top-bar">
+        <div class="container">
+            <h1>💧 Smart Water Safety & Disease Alert System</h1>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <div class="container">
+            <!-- Status Banner -->
+            <div class="status-banner" id="statusBanner">
+                <span id="statusIcon">🔄</span>
+                <span id="statusText">Initializing system...</span>
+            </div>
+
+            <!-- Main Grid Layout -->
+            <div class="dashboard-grid">
+                <!-- Live Sensor Readings -->
+                <section class="card sensor-card">
+                    <div class="card-header">
+                        <h2>📊 Live Sensor Readings</h2>
+                        <button class="refresh-btn" id="refreshBtn">🔄 Refresh</button>
+                    </div>
+                    <div class="sensor-grid">
+                        <div class="sensor-item">
+                            <div class="sensor-icon">🧪</div>
+                            <div class="sensor-info">
+                                <span class="sensor-label">pH Level</span>
+                                <span class="sensor-value" id="phValue">--</span>
+                                <span class="sensor-unit">pH</span>
+                            </div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">💧</div>
+                            <div class="sensor-info">
+                                <span class="sensor-label">TDS</span>
+                                <span class="sensor-value" id="tdsValue">--</span>
+                                <span class="sensor-unit">ppm</span>
+                            </div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">🌫️</div>
+                            <div class="sensor-info">
+                                <span class="sensor-label">Turbidity</span>
+                                <span class="sensor-value" id="turbidityValue">--</span>
+                                <span class="sensor-unit">NTU</span>
+                            </div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">🌡️</div>
+                            <div class="sensor-info">
+                                <span class="sensor-label">Temperature</span>
+                                <span class="sensor-value" id="tempValue">--</span>
+                                <span class="sensor-unit">°C</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timestamp">
+                        Last updated: <span id="lastUpdate">Never</span>
+                    </div>
+                </section>
+
+                <!-- Water Quality Prediction -->
+                <section class="card quality-card">
+                    <div class="card-header">
+                        <h2>🔬 Water Quality Analysis</h2>
+                    </div>
+                    <div class="quality-display">
+                        <div class="quality-badge" id="qualityBadge">
+                            <span class="quality-icon" id="qualityIcon">❓</span>
+                            <span class="quality-text" id="qualityText">Analyzing...</span>
+                        </div>
+                        <div class="confidence-meter">
+                            <span class="confidence-label">Confidence</span>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="confidenceFill"></div>
+                            </div>
+                            <span class="confidence-value" id="confidenceValue">0%</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Disease Risk Alerts -->
+                <section class="card alerts-card">
+                    <div class="card-header">
+                        <h2>⚕️ Disease Risk Alerts</h2>
+                    </div>
+                    <div class="alerts-container" id="alertsContainer">
+                        <div class="no-alerts">
+                            <span class="alert-icon">✅</span>
+                            <p>No health risks detected</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AI Insights -->
+                <section class="card insights-card">
+                    <div class="card-header">
+                        <h2>🤖 AI Water Quality Assistant</h2>
+                    </div>
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="bot-message">
+                                <span class="message-icon">🤖</span>
+                                <div class="message-content">
+                                    Hello! I'm your water quality AI assistant. Ask me anything about the current water readings, safety, diseases, or treatment methods!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <input 
+                                type="text" 
+                                id="chatInput" 
+                                placeholder="Ask about water quality, safety, diseases..." 
+                                class="chat-input"
+                            />
+                            <button id="sendChatBtn" class="send-btn">
+                                <span>📤</span>
+                            </button>
+                        </div>
+                        <div class="quick-questions">
+                            <span class="quick-label">Quick questions:</span>
+                            <button class="quick-btn" data-question="Is this water safe to drink?">Safe to drink?</button>
+                            <button class="quick-btn" data-question="What diseases can this water cause?">Diseases?</button>
+                            <button class="quick-btn" data-question="How should I treat this water?">Treatment?</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Graphs Section -->
+                <section class="card graphs-card">
+                    <div class="card-header">
+                        <h2>📈 Parameter Trends</h2>
+                        <select id="graphSelect" class="graph-selector">
+                            <option value="all">All Parameters</option>
+                            <option value="ph">pH Level</option>
+                            <option value="tds">TDS</option>
+                            <option value="turbidity">Turbidity</option>
+                            <option value="temperature">Temperature</option>
+                        </select>
+                    </div>
+                    <div class="graph-container">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Enhanced History Table with Modal -->
+                <section class="card history-card">
+                    <div class="card-header">
+                        <h2>📜 Recent Readings</h2>
+                        <button class="view-full-btn" id="viewFullHistoryBtn">📊 View Full History</button>
+                    </div>
+                    <div class="table-container-mini">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>pH</th>
+                                    <th>TDS (ppm)</th>
+                                    <th>Turbidity (NTU)</th>
+                                    <th>Temp (°C)</th>
+                                    <th>Quality</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBodyMini">
+                                <tr>
+                                    <td colspan="6" class="no-data">No readings yet - waiting for sensor data...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="text-align: center; margin-top: 10px; color: #7f8c8d; font-size: 0.9rem;">
+                        Showing last 5 readings only. Click "View Full History" for complete data.
+                    </div>
+                </section>
+            </div>
+
+            <!-- Full History Modal -->
+            <div class="modal-overlay" id="historyModal">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <h2>📊 Complete Reading History</h2>
+                        <button class="modal-close" id="closeHistoryModal">✕</button>
+                    </div>
+                    <div class="modal-controls">
+                        <div class="modal-stats">
+                            <span id="totalReadings">Total Readings: 0</span>
+                            <span id="dateRange">Date Range: --</span>
+                        </div>
+                        <div class="modal-actions">
+                            <button class="modal-btn export-btn" id="exportHistoryBtn">📥 Export CSV</button>
+                            <button class="modal-btn clear-btn" id="clearHistoryBtnModal">🗑️ Clear All</button>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-container-full">
+                            <table class="history-table-full">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Timestamp</th>
+                                        <th>pH</th>
+                                        <th>TDS (ppm)</th>
+                                        <th>Turbidity (NTU)</th>
+                                        <th>Temperature (°C)</th>
+                                        <th>Quality Status</th>
+                                        <th>Disease Risks</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyTableBodyFull">
+                                    <tr>
+                                        <td colspan="8" class="no-data">No readings available</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simulate Button (for testing without Arduino) -->
+            <div class="test-controls">
+                <button class="simulate-btn" id="simulateBtn">
+                    🧪 Simulate Reading
+                    <small>(Testing mode - generates random water quality data)</small>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
+                </button>
